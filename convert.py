@@ -4,7 +4,7 @@ import urllib.request
 
 # 配置项
 DLC_YAML_URL = "https://raw.githubusercontent.com/v2fly/domain-list-community/refs/heads/release/dlc.dat_plain.yml"
-OUTPUT_DIR = "shadowrocket"  # 输出目录修改为 shadowrocket
+OUTPUT_DIR = "rules"  # 修改输出目录名为 rules，会更清晰
 
 # 修复：自定义 YAML Loader，防止 0x0 被解析为整数 0
 class SafeLoaderIgnoreInt(yaml.SafeLoader):
@@ -61,6 +61,7 @@ def main():
         print(f"YAML 解析错误: {e}")
         return
 
+    # 确保目录存在
     if not os.path.exists(OUTPUT_DIR):
         os.makedirs(OUTPUT_DIR)
 
@@ -71,11 +72,10 @@ def main():
         name = item.get('name')
         rules = item.get('rules', [])
         
-        # 修正判断逻辑：跳过 None 或空字符串，但保留 0
+        # 修正判断逻辑
         if name is None or name == "":
             continue
         
-        # 统一转为字符串，防止极少数情况下的类型问题
         name = str(name)
             
         filename = os.path.join(OUTPUT_DIR, f"{name}.list")
@@ -85,17 +85,17 @@ def main():
             for rule_str in rules:
                 if not isinstance(rule_str, str):
                     continue
-                
                 sr_rule = parse_rule(rule_str)
                 if sr_rule:
                     f.write(sr_rule + '\n')
                     count += 1
         
-        if count > 0:
-            print(f"已生成: {filename} (共 {count} 条规则)")
-        else:
+        # 如果没有规则，删除空文件
+        if count == 0:
             if os.path.exists(filename):
                 os.remove(filename)
+        else:
+            print(f"已生成: {filename} (共 {count} 条规则)")
 
     print("转换完成！")
 
