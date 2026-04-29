@@ -4,19 +4,29 @@ import urllib.request
 
 # 配置项
 DLC_YAML_URL = "https://raw.githubusercontent.com/v2fly/domain-list-community/refs/heads/release/dlc.dat_plain.yml"
-OUTPUT_DIR = "rules"  # 修改输出目录名为 rules，会更清晰
+OUTPUT_DIR = "rules"  # 输出目录
 
-# 修复：自定义 YAML Loader，防止 0x0 被解析为整数 0
+# ==========================================
+# 修复部分：自定义 YAML Loader
+# 移除整数解析器，防止 0x0 被解析为 0
+# ==========================================
 class SafeLoaderIgnoreInt(yaml.SafeLoader):
     pass
 
-SafeLoaderIgnoreInt.add_implicit_resolver(
-    u'tag:yaml.org,2002:str',
-    yaml.SafeLoader.yaml_implicit_resolvers.get(None, []),
-    None
-)
+# 遍历所有的隐式解析器，过滤掉整型解析器
+# SafeLoader.yaml_implicit_resolvers 是一个字典，键是字符的首字符，值是(标签, 正则)列表
+for key in SafeLoaderIgnoreInt.yaml_implicit_resolvers.keys():
+    # 过滤掉 tag:yaml.org,2002:int 类型
+    new_resolvers = []
+    for tag, regexp in SafeLoaderIgnoreInt.yaml_implicit_resolvers[key]:
+        if tag != 'tag:yaml.org,2002:int':
+            new_resolvers.append((tag, regexp))
+    SafeLoaderIgnoreInt.yaml_implicit_resolvers[key] = new_resolvers
 
 def parse_rule(rule_str):
+    """
+    解析单条规则字符串，转换为 Shadowrocket 格式
+    """
     if ':' not in rule_str:
         return None
 
@@ -61,7 +71,6 @@ def main():
         print(f"YAML 解析错误: {e}")
         return
 
-    # 确保目录存在
     if not os.path.exists(OUTPUT_DIR):
         os.makedirs(OUTPUT_DIR)
 
@@ -72,10 +81,11 @@ def main():
         name = item.get('name')
         rules = item.get('rules', [])
         
-        # 修正判断逻辑
+        # 修正判断逻辑：跳过 None 或空字符串，但保留 0
         if name is None or name == "":
             continue
         
+        # 统一转为字符串
         name = str(name)
             
         filename = os.path.join(OUTPUT_DIR, f"{name}.list")
@@ -85,17 +95,17 @@ def main():
             for rule_str in rules:
                 if not isinstance(rule_str, str):
                     continue
+                
                 sr_rule = parse_rule(rule_str)
                 if sr_rule:
                     f.write(sr_rule + '\n')
                     count += 1
         
-        # 如果没有规则，删除空文件
-        if count == 0:
+        if count > 0:
+            print(f"已生成: {filename} (共 {count} 条规则)")
+        else:
             if os.path.exists(filename):
                 os.remove(filename)
-        else:
-            print(f"已生成: {filename} (共 {count} 条规则)")
 
     print("转换完成！")
 
