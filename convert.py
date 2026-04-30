@@ -14,33 +14,61 @@ class SafeLoaderIgnoreInt(yaml.SafeLoader):
     pass
 
 # 遍历所有的隐式解析器，过滤掉整型解析器
-# SafeLoader.yaml_implicit_resolvers 是一个字典，键是字符的首字符，值是(标签, 正则)列表
 for key in SafeLoaderIgnoreInt.yaml_implicit_resolvers.keys():
-    # 过滤掉 tag:yaml.org,2002:int 类型
     new_resolvers = []
     for tag, regexp in SafeLoaderIgnoreInt.yaml_implicit_resolvers[key]:
         if tag != 'tag:yaml.org,2002:int':
             new_resolvers.append((tag, regexp))
     SafeLoaderIgnoreInt.yaml_implicit_resolvers[key] = new_resolvers
 
+# 规则属性 -> Shadowrocket 策略 的映射表
+ATTRIBUTE_POLICY_MAP = {
+    'ads': 'REJECT',       # 广告域名 -> 拒绝
+    'cn': 'DIRECT',        # 中国域名 -> 直连
+    # '!cn': 'PROXY',      # 非中国域名 -> 代理（通常由用户在APP里设置默认策略，这里可选）
+}
+
+
 def parse_rule(rule_str):
     """
     解析单条规则字符串，转换为 Shadowrocket 格式
+    返回: (规则字符串, 属性列表) 或
     """
     if ':' not in rule_str:
-        return None
+        return None, []
 
     first_colon = rule_str.find(':')
     rule_type = rule_str[:first_colon]
     content = rule_str[first_colon+1:]
 
-    # 清除属性 (如 :@ads, :@cn)
+    # ==========================================
+    # 修改部分：提取并解析属性 (修复逻辑)
+    # ==========================================
+    attributes = []
     attr_marker = ":@"
+    
     if attr_marker in content:
-        content = content.split(attr_marker)[0]
+        # 分离内容和属性部分
+        # example.com:@cn,@ads -> content_part="example.com", attr_part="cn,@ads"
+        content_part, attr_part = content.split(attr_marker, 1)
+        
+        # 提取所有属性
+        # split(',') 处理多个属性情况
+        raw_attrs = attr_part.split(',')
+        for attr in raw_attrs:
+            attr = attr.strip()
+            # 修正：第一个属性 'cn' 没有 @ 前缀，后面的 '@ads' 有前缀
+            if attr.startswith('@'):
+                attributes.append(attr[1:])
+            else:
+                attributes.append(attr)
+        
+        # 内容主体更新为纯净的域名/IP
+        content = content_part
 
     shadowrocket_rule = None
     
+    # 基础规则转换
     if rule_type == 'domain':
         shadowrocket_rule = f"DOMAIN-SUFFIX,{content}"
     elif rule_type == 'full':
@@ -52,7 +80,28 @@ def parse_rule(rule_str):
     elif rule_type == 'cidr':
         shadowrocket_rule = f"IP-CIDR,{content},no-resolve"
     
-    return shadowrocket_rule
+    # ==========================================
+    # 策略附加逻辑
+    # ==========================================
+    if shadowrocket_rule:
+        # 定义优先级顺序（索引越小优先级越高）
+        # 这里的逻辑是：ads > cn > 其他
+        priority_order = ['ads', 'cn'] 
+        
+        final_policy = None
+    
+        for attr in priority_order:
+            if attr in attributes:
+                final_policy = ATTRIBUTE_POLICY_MAP.get(attr)
+                if final_policy:
+                    break  # 找到最高优先级的策略后立即退出，忽略后续低优先级属性
+        
+        # 如果都没有匹配到，final_policy 为 None，规则将使用 Shadowrocket 的全局默认策略
+        if final_policy:
+            shadowrocket_rule = f"{shadowrocket_rule},{final_policy}"
+        
+    return shadowrocket_rule, attributes
+
 
 def main():
     print(f"正在下载 YAML 文件: {DLC_YAML_URL}")
@@ -95,8 +144,8 @@ def main():
             for rule_str in rules:
                 if not isinstance(rule_str, str):
                     continue
-                
-                sr_rule = parse_rule(rule_str)
+                # 接收返回的规则（已包含策略）和属性列表
+                sr_rule, attrs = parse_rule(rule_str)
                 if sr_rule:
                     f.write(sr_rule + '\n')
                     count += 1
