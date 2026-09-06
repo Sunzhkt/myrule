@@ -1,0 +1,6 @@
+DOMAIN-SUFFIX,click.gamersky.com,REJECT
+DOMAIN-SUFFIX,gamersky.com
+DOMAIN-SUFFIX,ja.gamersky.com,REJECT
+DOMAIN-SUFFIX,ja1.gamersky.com,REJECT
+DOMAIN-SUFFIX,ja2.gamersky.com,REJECT
+DOMAIN-SUFFIX,wmbd.gamersky.com,REJECT

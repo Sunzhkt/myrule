@@ -1,0 +1,10 @@
+DOMAIN-SUFFIX,analytics.cloud.unity3d.com,REJECT
+DOMAIN-SUFFIX,cdp.cloud.unity3d.com,REJECT
+DOMAIN-SUFFIX,config.uca.cloud.unity3d.com,REJECT
+DOMAIN-SUFFIX,iads.unity3d.com,REJECT
+DOMAIN-SUFFIX,perf-events.cloud.unity3d.com,REJECT
+DOMAIN-SUFFIX,perf.cloud.unity3d.com,REJECT
+DOMAIN-SUFFIX,prd-lender.cdp.internal.unity3d.com,REJECT
+DOMAIN-SUFFIX,unity.com
+DOMAIN-SUFFIX,unity3d.com
+DOMAIN-SUFFIX,unityads.unity3d.com,REJECT
