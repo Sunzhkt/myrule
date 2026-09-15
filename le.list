@@ -1,0 +1,13 @@
+DOMAIN-SUFFIX,apple.www.letv.com,REJECT
+DOMAIN-SUFFIX,ark.letv.com,REJECT
+DOMAIN-SUFFIX,dc.letv.com,REJECT
+DOMAIN-SUFFIX,g3.letv.com,REJECT
+DOMAIN-SUFFIX,le.com
+DOMAIN-SUFFIX,leautolink.com
+DOMAIN-SUFFIX,lecloud.com
+DOMAIN-SUFFIX,lecloudapi.com
+DOMAIN-SUFFIX,lemall.com
+DOMAIN-SUFFIX,leso.cn
+DOMAIN-SUFFIX,letv.com
+DOMAIN-SUFFIX,letvcdn.com
+DOMAIN-SUFFIX,letvimg.com
