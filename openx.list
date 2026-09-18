@@ -1,0 +1,5 @@
+DOMAIN-SUFFIX,openx.net,REJECT
+DOMAIN-SUFFIX,openxadexchange.com,REJECT
+DOMAIN-SUFFIX,openxcdn.net,REJECT
+DOMAIN-SUFFIX,openxenterprise.com,REJECT
+DOMAIN-SUFFIX,openxmarket.asia,REJECT
