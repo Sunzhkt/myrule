@@ -1,0 +1,4 @@
+DOMAIN-SUFFIX,segment.com,REJECT
+DOMAIN-SUFFIX,segment.io,REJECT
+DOMAIN-SUFFIX,segmenthub.com,REJECT
+DOMAIN-SUFFIX,segmentify.com,REJECT
