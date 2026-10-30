@@ -1,0 +1,4 @@
+DOMAIN-SUFFIX,ssacdn.com,REJECT
+DOMAIN-SUFFIX,supersonic.com,REJECT
+DOMAIN-SUFFIX,supersonicads-a.akamaihd.net,REJECT
+DOMAIN-SUFFIX,supersonicads.com,REJECT
