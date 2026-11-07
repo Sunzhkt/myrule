@@ -1,0 +1,9 @@
+DOMAIN-SUFFIX,ads.unitychina.cn,REJECT
+DOMAIN-SUFFIX,splash-ads.cdn.unity.cn,REJECT
+DOMAIN-SUFFIX,splash-ads.unitychina.cn,REJECT
+DOMAIN-SUFFIX,u3d.cn
+DOMAIN-SUFFIX,unity.cn
+DOMAIN-SUFFIX,unity3dcloud.cn
+DOMAIN-SUFFIX,unityads.unity.cn,REJECT
+DOMAIN-SUFFIX,unityads.unitychina.cn,REJECT
+DOMAIN-SUFFIX,unitychina.cn
