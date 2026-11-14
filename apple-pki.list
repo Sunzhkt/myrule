@@ -1,0 +1,8 @@
+DOMAIN,certs-lb.apple.com.akadns.net,DIRECT
+DOMAIN,certs.apple.com,DIRECT
+DOMAIN,crl-lb.apple.com.akadns.net,DIRECT
+DOMAIN,crl.apple.com,DIRECT
+DOMAIN,ocsp.apple.com,DIRECT
+DOMAIN,ocsp2.apple.com,DIRECT
+DOMAIN,valid.apple.com,DIRECT
+DOMAIN,valid.origin-apple.com.akadns.net,DIRECT
