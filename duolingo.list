@@ -1,0 +1,5 @@
+DOMAIN-SUFFIX,ads-api.duolingo.com,REJECT
+DOMAIN-SUFFIX,analytics.vpc.duolingo.com,REJECT
+DOMAIN-SUFFIX,duolingo.cn,DIRECT
+DOMAIN-SUFFIX,duolingo.com
+DOMAIN-SUFFIX,metrics.duolingo.com,REJECT
