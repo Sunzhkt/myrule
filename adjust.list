@@ -1,0 +1,4 @@
+DOMAIN-SUFFIX,adjust.com,REJECT
+DOMAIN-SUFFIX,adjust.io,REJECT
+DOMAIN-SUFFIX,adjust.net.in,REJECT
+DOMAIN-SUFFIX,adjust.world,REJECT
